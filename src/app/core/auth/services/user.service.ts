@@ -22,7 +22,10 @@ export class UserService {
 
   login(credentials: { email: string; password: string }): Observable<{ user: User }> {
     return this.http
-      .post<{ user: User }>('/users/login', { user: credentials })
+      .post<{ user: User }>('/login/', {
+        ...credentials,
+        user_name: credentials.email,
+      })
       .pipe(tap(({ user }) => this.setAuth(user)));
   }
 
@@ -30,9 +33,14 @@ export class UserService {
     username: string;
     email: string;
     password: string;
+    confirmPassword: string;
   }): Observable<{ user: User }> {
     return this.http
-      .post<{ user: User }>('/users', { user: credentials })
+      .post<{ user: User }>('/users/', {
+        ...credentials,
+        user_name: credentials.username,
+        password2: credentials.confirmPassword,
+      })
       .pipe(tap(({ user }) => this.setAuth(user)));
   }
 
