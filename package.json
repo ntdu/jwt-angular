@@ -46,6 +46,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "lint-staged": "^16.1.5",
+    "prettier": "^3.6.2",
     "typescript": "~5.8.2"
   },
   "lint-staged": {
