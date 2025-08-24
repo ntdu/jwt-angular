@@ -8,6 +8,16 @@ const routes: Routes = [
       {
         path: ':username',
         component: ProfileComponent,
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./components/profile-articles.component'),
+          },
+          {
+            path: 'favorites',
+            loadComponent: () => import('./components/profile.favorites.component'),
+          },
+        ],
       },
     ],
   },
