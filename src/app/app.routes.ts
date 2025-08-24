@@ -5,6 +5,10 @@ import { map } from 'rxjs/operators';
 
 export const routes: Routes = [
   {
+    path: '',
+    loadComponent: () => import('./features/article/pages/home/home.component'),
+  },
+  {
     path: 'login',
     loadComponent: () => import('./core/auth/auth.component'),
     canActivate: [() => inject(UserService).isAuthenticated.pipe(map((isAuth) => !isAuth))],
