@@ -18,4 +18,8 @@ export const routes: Routes = [
     loadComponent: () => import('./core/auth/auth.component'),
     canActivate: [() => inject(UserService).isAuthenticated.pipe(map((isAuth) => !isAuth))],
   },
+  {
+    path: 'profile',
+    loadChildren: () => import('./features/profile/profile.routes'),
+  },
 ];
