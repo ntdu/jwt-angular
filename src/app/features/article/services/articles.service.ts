@@ -29,6 +29,24 @@ export class ArticlesService {
       .pipe(map((data) => data.article));
   }
 
+  delete(slug: string): Observable<void> {
+    return this.http.delete<void>(`/articles/${slug}`);
+  }
+
+  create(article: Partial<Article>): Observable<Article> {
+    return this.http
+      .post<{ article: Article }>('/articles', { article: article })
+      .pipe(map((data) => data.article));
+  }
+
+  update(article: Partial<Article>): Observable<Article> {
+    return this.http
+      .put<{ article: Article }>(`/articles/${article.slug}`, {
+        article: article,
+      })
+      .pipe(map((data) => data.article));
+  }
+
   favorite(slug: string): Observable<Article> {
     return this.http
       .post<{ article: Article }>(`/articles/${slug}/favorite`, {})

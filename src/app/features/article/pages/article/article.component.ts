@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { User } from '../../../../core/auth/user.model';
 import { Article } from '../../models/article.model';
 import { Comment } from '../../models/comment.model';
+import { Profile } from '../../../profile/models/profile.model';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { MarkdownPipe } from '../../../../shared/pipes/markdown.pipe';
 import { ListErrorsComponent } from '../../../../shared/components/list-errors.component';
@@ -38,7 +39,7 @@ import { Errors } from '../../../../core/models/errors.model';
     IfAuthenticatedDirective,
   ],
 })
-export class ArticleComponent implements OnInit {
+export default class ArticleComponent implements OnInit {
   article!: Article;
   currentUser!: User | null;
   comments: Comment[] = [];
@@ -81,8 +82,8 @@ export class ArticleComponent implements OnInit {
       });
   }
 
-  toggleFollowing(following: boolean): void {
-    this.article.author.following = following;
+  toggleFollowing(profile: Profile): void {
+    this.article.author.following = profile.following;
   }
 
   onToggleFavorite(favorited: boolean): void {
@@ -93,6 +94,15 @@ export class ArticleComponent implements OnInit {
     } else {
       this.article.favoritesCount--;
     }
+  }
+
+  deleteArticle(): void {
+    this.isDeleting = true;
+
+    this.articleService
+      .delete(this.article.slug)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => void this.router.navigate(['/']));
   }
 
   addComment() {
