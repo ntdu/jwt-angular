@@ -87,8 +87,8 @@
             <a [routerLink]="['/register']">Sign up</a> to add comments on this articles.
           </div>
 
-          @for (comment of comments; track comment.id) {
-            <app-article-comment [comment]="comment" (delete)="deleteComment($event)" />
+          @for (comment of comments; track comment) {
+            <app-article-comment [comment]="comment" (delete)="deleteComment(comment)" />
           }
         </div>
       </div>
