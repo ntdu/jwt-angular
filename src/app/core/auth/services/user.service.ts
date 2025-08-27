@@ -22,11 +22,29 @@ export class UserService {
 
   login(credentials: { email: string; password: string }): Observable<{ user: User }> {
     return this.http
-      .post<{ user: User }>('/login/', {
+      .post<{
+        code: number;
+        data: {
+          access: string;
+          refresh: string;
+          user_name: string;
+          email: string;
+        };
+        message: string;
+      }>('/login/', {
         ...credentials,
         user_name: credentials.email,
       })
-      .pipe(tap(({ user }) => this.setAuth(user)));
+      .pipe(
+        map(({ data }) => ({
+          user: {
+            token: data.access,
+            username: data.user_name,
+            email: data.email,
+          } as User,
+        })),
+        tap(({ user }) => this.setAuth(user)),
+      );
   }
 
   register(credentials: {
@@ -69,7 +87,10 @@ export class UserService {
 
   setAuth(user: User): void {
     this.jwtService.saveToken(user.token);
+    // this.jwtService.saveToken(user.token);
     this.currentUserSubject.next(user);
+    console.log(user);
+    console.log('==========================');
   }
 
   purgeAuth(): void {
