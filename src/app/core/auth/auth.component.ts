@@ -5,6 +5,7 @@ import { ListErrorsComponent } from '../../shared/components/list-errors.compone
 import { Errors } from '../models/errors.model';
 import { UserService } from './services/user.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { environment } from '../../../environments/environment';
 
 interface AuthForm {
   email: FormControl<string>;
@@ -46,6 +47,10 @@ export default class AuthComponent implements OnInit {
   ngOnInit(): void {
     this.authType = this.route.snapshot.url.at(-1)!.path;
     this.title = this.authType === 'login' ? 'Sign in' : 'Sign up';
+
+    // Load Google Sign-In
+    this.loadGoogleSignIn();
+
     if (this.authType === 'register') {
       this.authForm.addControl(
         'username',
@@ -62,6 +67,51 @@ export default class AuthComponent implements OnInit {
         }),
       );
     }
+  }
+
+  private loadGoogleSignIn(): void {
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => this.initializeGoogleSignIn();
+    document.head.appendChild(script);
+  }
+
+  private initializeGoogleSignIn(): void {
+    (window as any).google.accounts.id.initialize({
+      client_id: environment.googleClientId,
+      callback: (response: any) => this.handleGoogleSignIn(response),
+    });
+
+    (window as any).google.accounts.id.renderButton(
+      document.getElementById('google-signin-button'),
+      {
+        theme: 'outline',
+        size: 'large',
+        width: '100%',
+        text: this.authType === 'login' ? 'signin_with' : 'signup_with',
+      },
+    );
+  }
+
+  handleGoogleSignIn(response: any): void {
+    this.isSubmitting = true;
+    this.errors = { errors: {} };
+
+    console.log('Google Response:', response);
+    console.log('Google ID Token:', response.credential);
+
+    // this.userService.googleAuth(response.credential)
+    //   .pipe(takeUntilDestroyed(this.destroyRef))
+    //   .subscribe({
+    //     next: () => void this.router.navigateByUrl('/settings'),
+    //     error: (err) => {
+    //       console.error(err);
+    //       this.errors = { errors: err.error?.error || {} };
+    //       this.isSubmitting = false;
+    //     },
+    //   });
   }
 
   submitForm(): void {

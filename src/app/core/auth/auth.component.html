@@ -11,7 +11,19 @@
             <a [routerLink]="['/register']">Need an account?</a>
           }
         </p>
+
         <app-list-errors [errors]="errors" />
+
+        <!-- Google Sign-In Button -->
+        <div class="form-group">
+          <div id="google-signin-button"></div>
+        </div>
+
+        <!-- Divider -->
+        <div class="text-center my-3" style="text-align: center">
+          <span class="text-muted">or</span>
+        </div>
+
         <form [formGroup]="authForm" (ngSubmit)="submitForm()">
           <fieldset [disabled]="isSubmitting">
             <fieldset class="form-group">
